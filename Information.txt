@@ -1,0 +1,8 @@
+language python :
+
+4 sprites dont un contrôlé par le joueur --> une class joueur et une class bot --> joueur Clement, bot Arthur 
+					 --> une class pour boid --> Arthur
+					 --> pac man 
+					 --> une class color map --> Clement 
+
+deadline pour le 2 décembre pour faire intégration le 4-5-6 décembre 
