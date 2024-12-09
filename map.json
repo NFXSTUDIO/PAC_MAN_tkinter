@@ -1,22 +1,18 @@
 {
-    "pacman_directions":{
-        "Right":[
-            "images/pacmanR.png"
-        ],
-        "Left":[
-            "images/pacmanL.png"
-        ],
-        "Up":[
-            "images/pacmanU.png"
-        ],
-        "Down":[
-            "images/pacmanD.png"
-        ]
-    },
-
-    "background":{
-        "background_images":[
-            "images/background2.png"
-        ]
-    }
+    "down": [
+        "down_blinky_1.png",
+        "down_blinky_2.png"
+    ],
+    "up": [
+        "up_blinky_1.png",
+        "up_blinky_2.png"
+    ],
+    "left": [
+        "left_blinky_1.png",
+        "left_blinky_2.png"
+    ],
+    "right": [
+        "right_blinky_1.png",
+        "right_blinky_2.png"
+    ]
 }
