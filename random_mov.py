@@ -1,7 +1,8 @@
 import tkinter as tk
 import random
 from itertools import cycle
-
+import math
+import json
 
 class Ghost:
     def __init__(self, canvas, x, y, animation_frames, all_ghosts, frame_interval=100):
@@ -23,9 +24,19 @@ class Ghost:
     def move(self, dx, dy, direction):
         """Move the ghost and play the animation in the given direction."""
         self.current_animation = direction
-        self.x += dx
-        self.y += dy
+        # Calculate new position
+        new_x = self.x + dx
+        new_y = self.y + dy
+
+        # Check for collisions before moving
+        if self.check_collision(new_x, new_y):
+            return  # If collision is detected, don't move
+
+        # Move the ghost
+        self.x = new_x
+        self.y = new_y
         self.canvas.move(self.current_image, dx, dy)
+
         if not self.animation_running:
             self.animate()
 
@@ -124,6 +135,9 @@ class Ghost:
             if not self.check_collision(target_x, target_y):
                 break  # No collision, exit the loop
 
+            if self.check_alignement(target_x, target_y):
+              print("allignement")
+
         # Move the ghost to the first location
         self.move_to(target_x, target_y)
 
@@ -137,28 +151,50 @@ class Ghost:
                     return True  # Collision detected
         return False
 
+    def align_x(self):
+        """Align with the average direction of nearby ghosts on the x-axis."""
+        steering = 0
+        count = 0
+        for ghost in self.all_ghosts:
+            if ghost != self and self.distance(ghost) < self.perception_radius:
+                steering += ghost.velocity[0]
+                count += 1
+
+        if count > 0:
+            steering /= count
+
+        # Avoid too much alignment
+        speed = abs(steering)
+        if speed > self.max_speed:
+            steering = (steering / speed) * self.max_speed
+
+        return steering  # Return a tuple with x-axis steering and 0 for y-axis
+
 
 # Example usage
 if __name__ == "__main__":
     # Sample frame paths for each direction
-    animation_frames = {
-        "down": ["down_blinky_1.png", "down_blinky_2.png"],
-        "up": ["up_blinky_1.png", "up_blinky_2.png"],
-        "left": ["left_blinky_1.png", "left_blinky_2.png"],
-        "right": ["right_blinky_1.png", "right_blinky_2.png"]
-    }
+    def load_images():
+        with open("map.json", "r") as file:
+            data = json.load(file)
+            return(data)
+    animation_frames = load_images()
 
     root = tk.Tk()
     canvas = tk.Canvas(root, width=root.winfo_screenwidth(), height=root.winfo_screenheight(), bg="black")
     canvas.pack()
 
-    # Create a list of all ghosts for collision detection
     ghosts = [
-        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()), animation_frames, []),
-        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()), animation_frames, []),
-        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()), animation_frames, []),
-        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()), animation_frames, []),
-        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()), animation_frames, []),
+        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()),
+              animation_frames, []),
+        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()),
+              animation_frames, []),
+        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()),
+              animation_frames, []),
+        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()),
+              animation_frames, []),
+        Ghost(canvas, random.randint(0, canvas.winfo_screenwidth()), random.randint(0, canvas.winfo_screenheight()),
+              animation_frames, []),
     ]
 
     # Update the `all_ghosts` list for each ghost
