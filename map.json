@@ -13,8 +13,10 @@
             "images/pacmanD.png"
         ]
     },
+
     "background":{
         "background_images":[
             "images/background2.png"
         ]
     }
+}
